@@ -1,0 +1,15 @@
+  <header class="header">
+    <div class="logo">
+      <h2>Digital Visitors Registry -  <span><%- include ("../config/first_caps") %></span> <img src="../images/<%- include ("../config/logo") %>" alt=""></h2>
+    </div>
+    <div class="user-menu">
+      <a href="/admin/notifications" class="<%= pg === 'notifications' ? 'active' : '' %>"><i class="fas fa-bell"></i></a>
+      <a href="/admin/messages" class="<%= pg === 'messages' ? 'active' : '' %>"><i class="fas fa-envelope"></i></a>
+      <div style="display: flex; justify-content: space-between; align-items:center;">
+        <div class="user-avatar">
+        <img src="../images/admin/user-img.png" alt="User">
+        </div>
+        <span style="margin-left: 8px; font-size: 16px; color: #333;">Sgt M.Abubakar</span>
+      </div>
+    </div>
+  </header>

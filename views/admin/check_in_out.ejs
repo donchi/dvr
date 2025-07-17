@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visitor Check In - Digital Visitor Registry (DVR)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="shortcut icon" href="../images/favicon.png" type="image/png">
+  <style>
+.page-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.page-header h2 {
+  flex-grow: 1;
+  text-align: center;
+  vertical-align: baseline;
+  margin-bottom: 10px;
+}
+
+    /* Visitor Slip Styles */
+    #visitor-slip {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      font-family: Arial, sans-serif;
+    }
+    
+    .slip-header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #333;
+    }
+    
+    .slip-header img {
+      height: 60px;
+      margin-bottom: 10px;
+    }
+    
+    .slip-header h2 {
+      margin: 0;
+      color: #333;
+    }
+    
+    .slip-header p {
+      margin: 5px 0;
+      color: #666;
+    }
+    
+    .slip-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .slip-row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+    
+    .slip-label {
+      font-weight: bold;
+      min-width: 120px;
+      color: #333;
+    }
+    
+    .slip-value {
+      color: #555;
+    }
+    
+    .slip-footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px dashed #999;
+      color: #666;
+      font-size: 12px;
+    }
+    
+    .slip-qr {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .slip-qr img {
+      width: 120px;
+      height: 120px;
+      border: 1px solid #ddd;
+      padding: 5px;
+    }
+    
+    
+  /* Compact Receipt Styles */
+  #visitor-slip.receipt {
+    width: 80mm; /* Standard receipt width */
+    max-width: 80mm;
+    padding: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    display: none;
+    margin: 0 auto;
+    border: 1px dashed #ccc;
+  }
+  
+  .receipt .slip-header {
+    text-align: center;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed #000;
+  }
+  
+  .receipt .slip-header img {
+    height: 30px;
+    margin-bottom: 2px;
+  }
+  
+  .receipt .slip-header h2 {
+    font-size: 14px;
+    margin: 2px 0;
+  }
+  
+  .receipt .slip-header p {
+    font-size: 10px;
+    margin: 2px 0;
+  }
+  
+  .receipt .slip-body {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .receipt .slip-row {
+    display: flex;
+    margin-bottom: 3px;
+    line-height: 1.2;
+  }
+  
+  .receipt .slip-label {
+    min-width: 40%;
+    font-weight: bold;
+  }
+  
+  .receipt .slip-value {
+    flex-grow: 1;
+  }
+  
+  .receipt .slip-footer {
+    font-size: 10px;
+    margin-top: 10px;
+    padding-top: 5px;
+    border-top: 1px dashed #000;
+  }
+  
+  .receipt .slip-qr {
+    text-align: center;
+    margin: 5px 0;
+  }
+  
+  .receipt .slip-qr img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .receipt .divider {
+    border-top: 1px dashed #000;
+    margin: 5px 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 10px;
+  }
+  
+  @media print {
+      body * {
+        visibility: hidden;
+      }
+      #visitor-slip, #visitor-slip * {
+        visibility: visible;
+      }
+      #visitor-slip {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 100%;
+        box-shadow: none;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .visitor-profile {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .detail-row {
+        flex-direction: column;
+        gap: 5px;
+      }
+      
+      .detail-label {
+        width: 100%;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .form-actions button {
+        width: 100%;
+      }
+      
+      .slip-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    #visitor-slip.receipt, #visitor-slip.receipt * {
+      visibility: visible;
+    }
+    #visitor-slip.receipt {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 80mm;
+      max-width: 80mm;
+      box-shadow: none;
+      border: none;
+    }
+  }
+
+  /* Dialog Overlay */
+    .dialog-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .dialog-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* Dialog Box */
+    .dialog-box {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      width: 90%;
+      max-width: 400px;
+      padding: 20px;
+      transform: translateY(-20px);
+      transition: all 0.3s ease;
+    }
+    
+    .dialog-overlay.active .dialog-box {
+      transform: translateY(0);
+    }
+    
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .dialog-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #FFA500;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 15px;
+      font-size: 18px;
+    }
+    
+    .dialog-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+    }
+    
+    .dialog-message {
+      color: #555;
+      margin-bottom: 25px;
+      padding-left: 55px;
+      line-height: 1.5;
+    }
+    
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    
+    .btn-no {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+    
+    .btn-no:hover {
+      background-color: #e0e0e0;
+    }
+    
+    .btn-yes {
+      background-color: #FFA500;
+      color: white;
+    }
+    
+    .btn-yes:hover {
+      background-color: #e69500;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <%- include ("includes/header") %>
+
+  <!-- Side Navigation -->
+  <%- include ("includes/sidenav") %>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+        <button class="btn" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Back</button>
+      <h2>Visitor Check In/Out</h2>
+    </div>
+    
+    <div class="checkin-container">
+      <!-- Visitor Information Section -->
+      <div class="visitor-info-section">
+        <div class="section-header">
+          <h3><i class="fas fa-user-circle"></i> Personal Information</h3>
+        </div>
+        
+        <div class="visitor-profile">
+          <div class="visitor-details">
+            <h3><%= toProperCase(visitor?.title_rank) %> <%= toProperCase(visitor?.first_name) %> <%= toProperCase(visitor?.last_name) %>   <small class="visitor-type">(<%= visitor?.visitor_type %>)</small> 
+              <span class="status-badge <%= visitor?.status === 'checked in' ? 'active' : visitor?.status ==='checked out' ? 'inactive' : 'pending' %>" id="visitor-status"><%= toProperCase(visitor?.status) %></span></h3>
+            <div class="detail-row">
+              <span class="detail-label"><i class="fas fa-phone"></i> Phone:</span>
+              <span class="detail-value"><%= visitor?.phone_number%>  </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label"><i class="fas fa-map-marker-alt"></i> Address:</span>
+              <span class="detail-value"><%= toProperCase(visitor?.address) %>, <%= toProperCase(visitor?.city) %>, <%= toProperCase(visitor?.state) %></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label"><i class="fas fa-venus-mars"></i> Gender:</span>
+              <span class="detail-value"><%= toProperCase(visitor?.gender) %></span>
+            </div>
+             <div class="detail-row">
+              <span class="detail-label"><i class="fas fa-venus-mars"></i> Age Range:</span>
+              <span class="detail-value"><%= toProperCase(visitor?.age_range) %> years</span>
+            </div>
+          </div>
+            <div class="visitor-avatar big" style="margin-left: 50px;">
+            <img src="../images/visitors/<%= visitor?.photo %>" alt="<%= visitor?.first_name %>">
+          </div>
+        </div>
+      </div>
+
+        <div class="visitor-info-section" id="check-in-out-info" style="display: none;">
+        <div class="section-header">
+          <h3><i class="fas fa-building"></i> Check In/Out Information</h3>
+        </div>
+        
+        <div class="visiting-details">
+          <div class="error-list-checkout"></div>
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-right-to-bracket"></i> Check In:</span>
+            <span class="detail-value"><%= visitor?.check_in ? new Date(visitor?.check_in).toLocaleString([], {  month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : '' %></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-right-from-bracket"></i> Check Out:</span>
+            <span class="detail-value"><%= visitor?.check_out ? new Date(visitor?.check_out).toLocaleString([], {  month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : ''%></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-clock"></i> Time Spent:</span>
+            <span class="detail-value">
+              <% if (visitor.check_out) { %> 
+              <%= ((new Date(visitor?.check_out).getTime() - new Date(visitor?.check_in).getTime()) / (1000 * 60)).toFixed(0) %> mins (<%= ((new Date(visitor?.check_out).getTime() - new Date(visitor?.check_in).getTime()) / (1000 * 60 * 60)).toFixed(0) %> hrs)
+              <% } %>
+            </span>
+          </div>
+        </div>
+      </div>
+      <% if ( visitor && (visitor?.status === "checked in" || visitor?.status ==="checked out")) {%>
+        <div class="visitor-info-section">
+        <div class="section-header">
+          <h3><i class="fas fa-building"></i> Check In/Out Information</h3>
+        </div>
+        
+        <div class="visiting-details">
+          <div class="error-list-checkout"></div>
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-right-to-bracket"></i> Check In:</span>
+            <span class="detail-value"><%= visitor?.check_in ? new Date(visitor?.check_in).toLocaleString([], {  month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : '' %></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-right-from-bracket"></i> Check Out:</span>
+            <span class="detail-value"><%= visitor?.check_out ? new Date(visitor?.check_out).toLocaleString([], {  month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : ''%></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-clock"></i> Time Spent:</span>
+            <span class="detail-value">
+              <% if (visitor.check_out) { %> 
+              <%= ((new Date(visitor?.check_out).getTime() - new Date(visitor?.check_in).getTime()) / (1000 * 60)).toFixed(0) %> mins (<%= ((new Date(visitor?.check_out).getTime() - new Date(visitor?.check_in).getTime()) / (1000 * 60 * 60)).toFixed(0) %> hrs)
+              <% } %>
+            </span>
+          </div>
+        </div>
+      </div>
+      <% } %>
+      <div class="visitor-info-section">
+        <div class="section-header">
+          <h3><i class="fas fa-building"></i> Visiting Information</h3>
+        </div>
+        
+        <div class="visiting-details">
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-bullseye"></i> Purpose of Visit:</span>
+            <span class="detail-value"><%= toProperCase(visitor?.purpose_of_visit) %></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-map-pin"></i> Destination:</span>
+            <span class="detail-value"><%= visitor?.department ? visitor?.department.toUpperCase() : '' %></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-user-tie"></i> Person to See:</span>
+            <span class="detail-value"><%= toProperCase(visitor?.person_to_see) %></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-calendar-check"></i> Has Appointment:</span>
+            <span class="detail-value">
+              <% if (visitor?.has_appointment === true) { %>
+              <span class="status-badge active">Yes</span>
+              <% } else { %>
+              <span class="status-badge inactive">No</span>
+              <% } %>
+            </span>
+          </div>
+          <div id="official-section" style="display: <%= visitor?.status === 'checked in' || visitor?.status === 'checked out' ? 'block' : 'none' %>">
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-tag"></i> Tag Number:</span>
+            <span class="detail-value" id="tag-no-value"><%= visitor?.tag_no%></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-map-marked-alt"></i> Other Destinations:</span>
+            <span class="detail-value" id="other-destinations-value"><%= visitor?.other_destinations ? visitor?.other_destinations.toUpperCase() : '' %></span>
+          </div>
+           <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-users"></i> Dependants:</span>
+            <span class="detail-value" id="dependants-value"><%= visitor?.dependants %></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label"><i class="fas fa-comment"></i> Remark:</span>
+            <span class="detail-value" id="remark-value"><%= visitor?.remark %></span>
+          </div>
+          <div class="form-actions">
+            <% if (visitor?.status !== 'checked out') { %>
+            <form action="/admin/checkout-visitor" id="checkout-form" method="POST">
+              <input type="hidden" name="visitor_id" value="<%= visitor?.visitor_id %>">
+                <button type="submit" id="check-out-btn" class="btn" style="background-color:orange;"><i class="fas fa-right-from-bracket"></i> Check Out</button>
+            </form>
+            <button type="button" class="btn" id="print-slip-btn"><i class="fas fa-print"></i> Print Visitor Slip</button> 
+            <% } %>          
+          </div>
+          </div>
+        </div>
+      </div>
+      
+       <% if ( visitor && visitor?.status === "checking in" ) {%>
+      <!-- Official Check-in Form -->
+      <div class="official-form-section" id="official-form-section">
+        <div class="section-header">
+          <h3><i class="fas fa-clipboard-check"></i> Official Check-in</h3>
+        </div>
+       <div class="error-list"></div>
+       <div class="success-container"></div>
+        <form id="checkin-visitor-form" method="POST" action="/admin/checkin-visitor">
+          <div class="form-group">
+            <label for="other-destinations"><i class="fas fa-map-marked-alt"></i> Other Destinations</label>
+            <input type="text" id="other-destinations" name="other_destinations" placeholder="Enter additional destinations if any">
+          </div>
+          
+         <div class="form-row"> <!-- New container for the row -->
+      <div class="form-group" style="flex: 1; margin-right: 15px;">
+        <label for="dependants"><i class="fas fa-users"></i> Dependants</label>
+        <select id="dependants" name="dependants">
+          <option value="0">None</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      
+      <div class="form-group" style="flex: 1;">
+        <label for="tag-no"><i class="fas fa-tag"></i> Tag Number</label>
+        <input type="text" id="tag-no" name="tag_no" inputmode="numeric" pattern="\d{2}" placeholder="Enter visitor tag number">
+      </div>
+    </div>
+          <div class="form-group">
+            <label for="remark"><i class="fas fa-comment"></i> Remarks</label>
+            <textarea id="remark" name="remark" rows="3" placeholder="Enter any additional remarks"></textarea>
+          </div>
+          <input type="hidden" name="visitor_id" value="<%= visitor?.visitor_id %>">
+
+          <div class="form-actions">
+            <button type="submit" id="check-in-btn" class="btn primary"><i class="fas fa-right-to-bracket"></i> Check In</button>     
+          </div>
+        </form>
+      </div>
+      <% } %>
+    </div>
+  </main>
+
+  <div id="visitor-slip" class="receipt">
+    <div class="slip-header">
+      <img src="../images/<%- include ('config/logo') %>" style="filter: grayscale(100%);">
+      <h2><%- include ("config/short_name") %> VISITOR PASS</h2>
+      <p>DIGITAL VISITOR REGISTRY</p>
+    </div>
+    
+    <div class="divider">VISITOR INFORMATION</div>
+    
+    <div class="slip-body">
+      <div class="slip-row">
+        <span class="slip-label">NAME:</span>
+        <span class="slip-value" id="slip-name"><%= toProperCase(visitor?.first_name) %> <%= toProperCase (visitor?.last_name) %> </span>
+      </div>
+      <div class="slip-row">
+        <span class="slip-label">PHONE:</span>
+        <span class="slip-value" id="slip-phone"><%=visitor.phone_number%></span>
+      </div>
+      <div class="slip-row">
+        <span class="slip-label">CHECK-IN:</span>
+        <span class="slip-value" id="slip-checkin"><%= visitor?.check_in ? new Date(visitor?.check_in).toLocaleString() : '' %></span>
+      </div>
+    </div>
+    
+    <div class="divider">VISIT DETAILS</div>
+    
+    <div class="slip-body">
+      <div class="slip-row">
+        <span class="slip-label">PURPOSE:</span>
+        <span class="slip-value" id="slip-purpose"><%= (visitor?.purpose_of_visit) %></span>
+      </div>
+      <div class="slip-row">
+        <span class="slip-label">DESTINATION:</span>
+        <span class="slip-value" id="slip-destination"><%= visitor?.department ? visitor?.department : '' %></span>
+      </div>
+      <div class="slip-row">
+        <span class="slip-label">TO SEE:</span>
+        <span class="slip-value" id="slip-person"><%= (visitor?.person_to_see) %></span>
+      </div>
+      <div class="slip-row">
+        <span class="slip-label">APPOINTMENT:</span>
+        <span class="slip-value" id="slip-appointment"><%= visitor?.has_appointment ? "Yes" : "No" %> </span>
+      </div>
+      <div class="slip-row">
+        <span class="slip-label">TAG NO:</span>
+        <span class="slip-value" id="slip-tag"><%= visitor?.tag_no %></span>
+      </div>      
+      <div class="slip-row">
+        <span class="slip-label">DEPENDANTS:</span>
+        <span class="slip-value" id="slip-dependants"><%= visitor?.dependants %></span>
+      </div>
+      <div class="slip-row">
+        <span class="slip-label">OTHER DESTINATIONS:</span>
+        <span class="slip-value" id="slip-other-destinations"><%= visitor?.other_destinations ? visitor?.other_destinations.toUpperCase() : '' %></span>
+      </div>
+    </div>
+    
+    <div class="slip-qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=visitor:JohnDoe" alt="QR Code">
+      <p>SCAN TO VERIFY</p>
+    </div>
+    
+    <div class="slip-footer">
+      <p>VALID FOR TODAY ONLY</p>
+      <p>MUST BE DISPLAYED AT ALL TIMES</p>
+    </div>
+  </div>
+
+  <!-- Dialog Popup -->
+  <div class="dialog-overlay" id="checkout-dialog">
+    <div class="dialog-box">
+      <div class="dialog-header">
+        <div class="dialog-icon">
+          <i class="fas fa-question"></i>
+        </div>
+        <h3 class="dialog-title">Confirm Check Out</h3>
+      </div>
+      <p class="dialog-message">Are you sure you want to check out the visitor?</p>
+      <div class="dialog-actions">
+        <button class="btn btn-no" id="dialog-no">No</button>
+        <button class="btn btn-yes" id="dialog-yes">Yes</button>
+      </div>
+    </div>
+  </div>
+
+<script type="module" src="../scripts/admin.js"></script>
+</body>
+</html>

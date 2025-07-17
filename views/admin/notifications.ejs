@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications - Digital Visitor Registry (DVR)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="shortcut icon" href="../images/favicon.png" type="image/png">
+    <style>
+    .notifications-container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      margin-top: 20px;
+    }
+    
+    .notification-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .notification-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .notification-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .notification-item {
+      padding: 15px 20px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .notification-item.unread {
+      background: #f0f7ff;
+    }
+    
+    .notification-item:hover {
+      background: #f9f9f9;
+    }
+    
+    .notification-title {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .notification-time {
+      font-size: 12px;
+      color: #888;
+      margin-left: auto;
+    }
+    
+    .notification-content {
+      font-size: 14px;
+      color: #555;
+      margin-left: 25px;
+    }
+    
+    .notification-type {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-right: 10px;
+    }
+    
+    .security {
+      background: #ffebee;
+      color: #d32f2f;
+    }
+    
+    .visitor {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+    
+    .system {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+    
+    .warning {
+      background: #fff8e1;
+      color: #ff8f00;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #888;
+    }
+    
+    .empty-state i {
+      font-size: 40px;
+      margin-bottom: 15px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <%- include ('includes/header') %>
+
+  <!-- Side Navigation -->
+  <%- include ('includes/sidenav') %>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h2>Notifications</h2>
+      <div class="page-actions">
+        <button class="btn"><i class="fas fa-check"></i> Mark All as Read</button>
+      </div>
+    </div>
+    
+    <div class="notifications-container">
+      <div class="notification-header">
+        <h3>Recent Notifications</h3>
+        <div class="notification-actions">
+          <button class="btn small"><i class="fas fa-filter"></i> Filter</button>
+        </div>
+      </div>
+      
+      <ul class="notification-list">
+        <li class="notification-item unread">
+          <div class="notification-title">
+            <span class="notification-type security"><i class="fas fa-shield-alt"></i> Security</span>
+            Unauthorized Access Attempt
+            <span class="notification-time">10:45 AM</span>
+          </div>
+          <div class="notification-content">
+            Multiple failed attempts to access restricted area detected at North Wing entrance. Security team notified.
+          </div>
+        </li>
+        
+        <li class="notification-item unread">
+          <div class="notification-title">
+            <span class="notification-type warning"><i class="fas fa-flag"></i> Flagged</span>
+            Flagged Visitor Checked In
+            <span class="notification-time">09:30 AM</span>
+          </div>
+          <div class="notification-content">
+            Chinedu Eze (previously flagged) has checked in to meet with Capt. Amina Yusuf.
+          </div>
+        </li>
+        
+        <li class="notification-item">
+          <div class="notification-title">
+            <span class="notification-type visitor"><i class="fas fa-user"></i> Visitor</span>
+            New Visitor Checked In
+            <span class="notification-time">Yesterday, 11:05 AM</span>
+          </div>
+          <div class="notification-content">
+            Emeka Okonkwo checked in at Main Gate to meet with Col. James Smith.
+          </div>
+        </li>
+        
+        <li class="notification-item">
+          <div class="notification-title">
+            <span class="notification-type system"><i class="fas fa-cog"></i> System</span>
+            Maintenance Scheduled
+            <span class="notification-time">Jun 8, 1:20 PM</span>
+          </div>
+          <div class="notification-content">
+            System maintenance scheduled for Saturday, June 10 from 10:00 PM to 11:30 PM.
+          </div>
+        </li>
+      </ul>
+      
+      <!-- Empty state example (hidden by default) -->
+      <!-- <div class="empty-state" style="display: none;">
+        <i class="fas fa-bell-slash"></i>
+        <h3>No Notifications</h3>
+        <p>You don't have any notifications yet.</p>
+      </div> -->
+    </div>
+  </main>
+
+  <script>
+    // Mark notification as read when clicked
+    document.querySelectorAll('.notification-item').forEach(item => {
+      item.addEventListener('click', function() {
+        this.classList.remove('unread');
+        // In a real app, you would also update the server
+      });
+    });
+    
+    // Mark all as read functionality
+    document.querySelector('.page-actions .btn:first-child').addEventListener('click', function() {
+      document.querySelectorAll('.notification-item').forEach(item => {
+        item.classList.remove('unread');
+      });
+    });
+  </script>
+</body>

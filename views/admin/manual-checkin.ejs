@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual Check In - Digital Visitor Registry (DVR)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="shortcut icon" href="../images/favicon.png" type="image/png">
+    <style>
+    /* Additional styles for the form */
+    .form-container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      padding: 25px;
+      margin-top: 20px;
+    }
+    
+    .form-section {
+      margin-bottom: 30px;
+    }
+    
+    .form-section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .form-section-header h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #333;
+    }
+    
+    .form-section-header i {
+      margin-right: 10px;
+      color: var(--primary);
+    }
+    
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -10px 15px;
+    }
+    
+    .form-group {
+      flex: 1 0 200px;
+      padding: 0 10px;
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    
+    .photo-upload {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .photo-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 4px;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .photo-preview img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+    
+    .photo-upload-btn {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .photo-upload-btn button {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .photo-upload-btn small {
+      color: #777;
+      font-size: 12px;
+    }
+    
+    .required-field::after {
+      content: " *";
+      color: red;
+    }
+    
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+      }
+      
+      .form-group {
+        flex: 1 0 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <%- include ('includes/header') %>
+
+  <!-- Side Navigation -->
+  <%- include ('includes/sidenav') %>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h2>Manual Check In</h2>
+      <div class="page-actions">
+        <button class="btn" onclick="window.history.back()">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+      </div>
+    </div>
+    
+    <div class="form-container">
+      <form id="checkInForm">
+        <!-- Visitor Details Section -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="fas fa-user"></i>
+            <h3>Visitor Details</h3>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="required-field">First Name</label>
+              <input type="text" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="required-field">Last Name</label>
+              <input type="text" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel">
+            </div>
+            
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="required-field">Gender</label>
+              <select required>
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Age Range</label>
+              <select>
+                <option value="">Select Age Range</option>
+                <option value="18-25">18-25</option>
+                <option value="26-35">26-35</option>
+                <option value="36-45">36-45</option>
+                <option value="46-55">46-55</option>
+                <option value="56+">56+</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Address</label>
+              <textarea></textarea>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="required-field">Visitor Photo</label>
+              <div class="photo-upload">
+                <div class="photo-preview">
+                  <i class="fas fa-user" style="font-size: 40px; color: #ccc;"></i>
+                </div>
+                <div class="photo-upload-btn">
+                  <button type="button" id="uploadPhotoBtn">
+                    <i class="fas fa-image"></i> Upload Photo
+                  </button>
+                  <button type="button" id="uploadPhotoBtn">
+                    <i class="fas fa-camera"></i> Capture Photo
+                  </button>
+                  <small>Max. 2MB (JPG, PNG)</small>
+                  <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Visiting Details Section -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>Visiting Details</h3>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="required-field">Purpose of Visit</label>
+              <select required>
+                <option value="">Select Purpose</option>
+                <option value="official">Official Business</option>
+                <option value="meeting">Meeting</option>
+                <option value="delivery">Delivery</option>
+                <option value="personal">Personal Visit</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="required-field">Person to Visit</label>
+              <input type="text" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="required-field">Department/Unit</label>
+              <input type="text" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="required-field">Destination</label>
+              <select required>
+                <option value="">Select Destination</option>
+                <option value="main_gate">Main Gate</option>
+                <option value="north_wing">North Wing</option>
+                <option value="admin_block">Admin Block</option>
+                <option value="command_center">Command Center</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Additional Notes</label>
+              <textarea placeholder="Any special instructions or notes"></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn" onclick="window.history.back()">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+          <button type="submit" class="btn primary">
+            <i class="fas fa-check"></i> Check In
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    // Handle photo upload preview
+    document.getElementById('uploadPhotoBtn').addEventListener('click', function() {
+      document.getElementById('photoUpload').click();
+    });
+    
+    document.getElementById('photoUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const preview = document.querySelector('.photo-preview');
+          preview.innerHTML = `<img src="${event.target.result}" alt="Visitor Photo">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // Form submission
+    document.getElementById('checkInForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Here you would typically handle form submission to your backend
+      alert('Visitor checked in successfully!');
+      // Redirect to today's visitors page after successful submission
+      window.location.href = 'today-visitors.html';
+    });
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages - Digital Visitor Registry (DVR)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="shortcut icon" href="../images/favicon.png" type="image/png">
+    <style>
+    .messages-container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      margin-top: 20px;
+      display: flex;
+    }
+    
+    .conversation-list {
+      width: 300px;
+      border-right: 1px solid #eee;
+    }
+    
+    .conversation-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .conversation-search {
+      padding: 10px 20px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .conversation-search input {
+      width: 100%;
+      padding: 8px 15px 8px 35px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .conversation-search i {
+      position: absolute;
+      left: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+    
+    .conversation-item {
+      padding: 15px 20px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .conversation-item.unread {
+      background: #f0f7ff;
+    }
+    
+    .conversation-item:hover {
+      background: #f9f9f9;
+    }
+    
+    .conversation-item.active {
+      background: var(--primary-light);
+    }
+    
+    .conversation-sender {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .conversation-time {
+      font-size: 12px;
+      color: #888;
+    }
+    
+    .conversation-preview {
+      font-size: 14px;
+      color: #555;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .message-view {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .message-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .message-recipient {
+      font-weight: 600;
+    }
+    
+    .message-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .message-compose {
+      padding: 15px 20px;
+      border-top: 1px solid #eee;
+    }
+    
+    .message-compose textarea {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    .message-compose-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #888;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .empty-state i {
+      font-size: 40px;
+      margin-bottom: 15px;
+      color: #ccc;
+    }
+    
+    @media (max-width: 768px) {
+      .messages-container {
+        flex-direction: column;
+      }
+      
+      .conversation-list {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <%- include ('includes/header') %>
+
+  <!-- Side Navigation -->
+  <%- include ('includes/sidenav') %>
+
+  <!-- Main Content -->
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h2>Messages</h2>
+      <div class="page-actions">
+        <button class="btn primary"><i class="fas fa-plus"></i> New Message</button>
+      </div>
+    </div>
+    
+    <div class="messages-container">
+      <div class="conversation-list">
+        <div class="conversation-header">
+          <h3>Conversations</h3>
+          <button class="btn small"><i class="fas fa-filter"></i> Filter</button>
+        </div>
+        
+        <div class="conversation-search">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search messages..." style="box-sizing: border-box;">
+        </div>
+        
+        <div class="conversation-item unread active">
+          <div class="conversation-sender">
+            <span>Security Team</span>
+            <span class="conversation-time">Today, 11:20 AM</span>
+          </div>
+          <div class="conversation-preview">
+            Please review the security report for yesterday's incident at the North Wing entrance...
+          </div>
+        </div>
+        
+        <div class="conversation-item">
+          <div class="conversation-sender">
+            <span>Admin Department</span>
+            <span class="conversation-time">Yesterday, 4:45 PM</span>
+          </div>
+          <div class="conversation-preview">
+            Reminder: Monthly staff meeting tomorrow at 10:00 AM in Conference Room B...
+          </div>
+        </div>
+        
+        <div class="conversation-item">
+          <div class="conversation-sender">
+            <span>IT Support</span>
+            <span class="conversation-time">Monday, 2:15 PM</span>
+          </div>
+          <div class="conversation-preview">
+            Your request for software upgrade has been approved. We'll schedule the installation...
+          </div>
+        </div>
+      </div>
+      
+      <div class="message-view">
+        <div class="message-header">
+          <div class="message-recipient">
+            <i class="fas fa-user"></i> Security Team
+          </div>
+          <div class="message-actions">
+            <button class="btn small"><i class="fas fa-archive"></i> Archive</button>
+          </div>
+        </div>
+        
+        <div class="message-content">
+          <p><strong>Subject:</strong> Security Report Review - Unauthorized Access Attempt</p>
+          <p>Dear Sgt. Abubakar,</p>
+          <p>Please review the attached security report regarding yesterday's incident at the North Wing entrance. We've identified three unauthorized access attempts between 14:30 and 15:45.</p>
+          <p>Your approval is required before we escalate this matter to the security committee. Kindly review and provide your feedback by end of day.</p>
+          <p>Regards,<br>Security Team</p>
+        </div>
+        
+        <div class="message-compose">
+          <textarea placeholder="Type your reply..."></textarea>
+          <div class="message-compose-actions">
+            <button class="btn"><i class="fas fa-paperclip"></i> Attach</button>
+            <button class="btn primary"><i class="fas fa-paper-plane"></i> Send</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Empty state example (hidden by default) -->
+      <!-- <div class="empty-state" style="display: none;">
+        <i class="fas fa-envelope-open"></i>
+        <h3>No Messages</h3>
+        <p>You don't have any messages yet.</p>
+        <button class="btn primary" style="margin-top: 15px;">
+          <i class="fas fa-plus"></i> New Message
+        </button>
+      </div> -->
+    </div>
+  </main>
+
+  <script>
+    // Conversation selection functionality
+    document.querySelectorAll('.conversation-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.conversation-item').forEach(i => {
+          i.classList.remove('active');
+        });
+        this.classList.add('active');
+        this.classList.remove('unread');
+        // In a real app, you would load the conversation content
+      });
+    });
+    
+    // New message button functionality
+    document.querySelector('.page-actions .btn.primary').addEventListener('click', function() {
+      // In a real app, this would open a new message composer
+      alert('New message composer would open here');
+    });
+  </script>
+</body>

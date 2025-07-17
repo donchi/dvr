@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Digital Visitor Registry</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="shortcut icon" href="../images/favicon.png" type="image/png">
+</head>
+<body>
+  <!-- Header -->
+  <%- include ('includes/header') %>
+
+  <!-- Side Navigation -->
+  <%- include ('includes/sidenav') %>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <h2>Dashboard</h2>
+    <div class="dashboard-cards">
+      <div class="card">
+        <h3>Today's Visitors</h3>
+        <div class="count">24</div>
+      </div>
+      <div class="card">
+        <h3>Total Visitors</h3>
+        <div class="count">1,245</div>
+      </div>
+      <div class="card">
+        <h3>Flagged Visitors</h3>
+        <div class="count">8</div>
+      </div>
+      <div class="card">
+        <h3>Special Cases</h3>
+        <div class="count">3</div>
+      </div>
+    </div>
+
+    <!-- Add this inside the <main class="main-content"> section, after the dashboard-cards div -->
+    <div class="dashboard-charts">
+
+      <div class="chart-container">
+        <h3>Visiting Trend Today</h3>
+        <div class="chart" id="todayTrendChart">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-container">
+        <h3>Visitors Destination Today</h3>
+        <div class="chart" id="destinationChart">
+          <canvas id="hbarchart"></canvas>
+        </div>
+      </div>
+      <div class="chart-container">
+        <h3>Visitors This Week</h3>
+        <div class="chart" id="weeklyVisitorsChart">
+          <!-- Chart will be rendered here -->
+          <canvas id="weeklyChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-container">
+        <h3>Visitor Categories This Week</h3>
+        <div class="chart" id="visitorCategoriesChart">
+          <!-- Chart will be rendered here -->
+          <canvas id="categoriesChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="../scripts/charts.js"></script>
+</body>
+</html>

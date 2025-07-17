@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flagged Visitors - Digital Visitor Registry (DVR)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="shortcut icon" href="../images/favicon.png" type="image/png">
+</head>
+<body>
+  <!-- Header -->
+  <%- include ('includes/header') %>
+
+  <!-- Side Navigation -->
+  <%- include ('includes/sidenav') %>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h2>Flagged Visitors</h2>
+      <div class="page-actions">
+        <button class="btn"><i class="fas fa-file-export"></i> Export</button>
+      </div>
+    </div>
+    
+    <div class="search-filter-container">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search flagged visitors...">
+      </div>
+      
+      <div class="filter-group">
+        <select>
+          <option>All Types</option>
+          <option>New Visitors</option>
+          <option>Returning Visitors</option>
+        </select>
+        
+        <button class="btn"><i class="fas fa-filter"></i> Filter</button>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table class="visitors-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Age Range</th>
+            <th>Address</th>
+            <th>First Visit</th>
+            <th>Last Visit</th>
+            <th>Total Visits</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% result.forEach(row => { %>
+           <tr>
+            <td>
+              <div class="visitor-name-cell">
+              <div class="visitor-avatar">
+                <img src="../images/visitors/<%=row.photo%>" alt="<%= row?.first_name %> ">
+              </div>
+              <span><%= toProperCase(row?.title_rank) %> <%= row?.first_name %> <%= row?.last_name %> <small class="visitor-type">(<%= row?.visitor_type %>)</small> </span> 
+            </td>
+            <td><%= toProperCase(row.phone_number) %></td>
+            <td><%= toProperCase(row.age_range) %> yrs</td>
+            <td><%= toProperCase(row?.address) %>, <%= toProperCase(row?.city) %>, <%= toProperCase(row?.state) %></td>
+            <td><%= row?.first_visit ? new Date(row?.first_visit).toLocaleString([], {  month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : '' %></td>
+            <td><%= row?.last_visit ? new Date(row?.last_visit).toLocaleString([], {  month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : '' %></td>
+            <td><%= row?.total_visits %></td>
+            <td><button class="btn">reason</button></td>
+          </tr>
+          <% }) %>       
+        </tbody>
+      </table>
+  
+      <!-- Pagination Controls -->
+      <div class="pagination">
+        <div class="pagination-info">Showing 1-10 of 24 visitors</div>
+        <div class="pagination-controls">
+          <button class="pagination-btn" disabled>
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="pagination-btn active">1</button>
+          <button class="pagination-btn">2</button>
+          <button class="pagination-btn">3</button>
+          <button class="pagination-btn">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="pagination-page-size">
+          <span>Rows per page:</span>
+          <select>
+            <option>10</option>
+            <option>25</option>
+            <option>50</option>
+            <option>100</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    </div>
+  </main>
+
+<script type="module" src="../scripts/admin.js"></script>
+</body>
+</html>

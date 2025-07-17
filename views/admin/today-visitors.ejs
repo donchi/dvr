@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Today's Visitors - Digital Visitor Registry (DVR)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="shortcut icon" href="../images/favicon.png" type="image/png">
+</head>
+
+
+<body>
+  <!-- Header -->
+  <%- include ('includes/header') %>
+
+  <!-- Side Navigation -->
+  <%- include ('includes/sidenav') %>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h2>Today's Visitors</h2>
+      <div class="page-actions">
+         <a class="btn primary" href="/admin/verification_codes" style="text-decoration: none;"><i class="fas fa-phone"></i>Verification Code</a>
+        <a href="/admin/manual-checkin" class="btn" style="text-decoration: none;"><i class="fas fa-right-to-bracket"></i> Manual Check In</a>
+        <button class="btn" onclick="window.location.href='/admin/today-visitors'"><i class="fas fa-sync-alt"></i> Refresh</button>
+        <button class="btn"><i class="fas fa-file-export"></i> Export</button>
+      </div>
+    </div>
+    
+    <div class="search-filter-container">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search visitors, destinations...">
+      </div>
+      
+      <div class="filter-group">
+        <select>
+          <option>All Types</option>
+          <option>New Visitors</option>
+          <option>Returning Visitors</option>
+        </select>
+        
+        <select>
+          <option>All Status</option>
+          <option>Checked In</option>
+          <option>Checked Out</option>
+          <option>Pending</option>
+        </select>
+        
+        <button class="btn"><i class="fas fa-filter"></i> Filter</button>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table class="visitors-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Destination</th>
+            <th>Person to See</th>
+            <th>Purpose of Visit</th>
+            <th>Phone Number</th>
+            <th>Check In Time</th>
+            <th>Check Out Time</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <!-- In the table body section, update each name cell to include an avatar -->
+        <tbody>
+          <% result.forEach(row => { %>
+           <tr>
+            <td>
+              <div class="visitor-name-cell">
+              <div class="visitor-avatar">
+                <img src="../images/visitors/<%=row.photo%>" alt="<%= row?.first_name %> ">
+              </div>
+              <span><%= toProperCase(row?.title_rank) %> <%= row?.first_name %> <%= row?.last_name %> </span> 
+               <% if(row?.is_flagged) { %> <i title="Flag Visitor" class="fas fa-flag" style="color: red;"></i> <% } %>
+            </td>
+            <td><%= toProperCase(row.department) %></td>
+            <td><%= toProperCase(row.person_to_see) %></td>
+            <td><%= toProperCase(row.purpose_of_visit) %></td>
+            <td><%= row.phone_number %></td>
+            <td><%= row?.check_in ? new Date(row?.check_in).toLocaleString([], {  month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : '' %></td>
+            <td><%= row?.check_out ? new Date(row?.check_out).toLocaleString([], {  month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : ''%></td>
+            <td>
+              <div class="dropdown">
+                <button class="dropdown-btn"><i class="fas fa-ellipsis-v"></i></button>
+                <div class="dropdown-content">
+                  <button class="btn a-link" id="checkin-btn" onclick="window.location.href=`/admin/check_in_out?id=<%= row?.visitor_id %>`"><i class="fas fa-sign-in-alt"></i> Check In/Out</button>
+                  <button class="btn a-link" onclick="window.location.href=`/admin/visitor_info?id=<%= row?.visitor_id %>`"><i class="fas fa-info-circle"></i> Visitor Info</button>
+                  
+                </div>
+              </div>
+            </td>
+          </tr>
+          <% }) %>
+          
+        </tbody>
+      </table>
+  
+      <!-- Pagination Controls -->
+      <div class="pagination">
+        <div class="pagination-info">Showing 1-10 of 24 visitors</div>
+        <div class="pagination-controls">
+          <button class="pagination-btn" disabled>
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="pagination-btn active">1</button>
+          <button class="pagination-btn">2</button>
+          <button class="pagination-btn">3</button>
+          <button class="pagination-btn">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="pagination-page-size">
+          <span>Rows per page:</span>
+          <select>
+            <option>10</option>
+            <option>25</option>
+            <option>50</option>
+            <option>100</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    </div>
+  </main>
+
+<script type="module" src="../scripts/admin.js"></script>
+</body>
+</html>

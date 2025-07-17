@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Visitors - Digital Visitor Registry (DVR)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="shortcut icon" href="../images/favicon.png" type="image/png">
+  <style>
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 500px;
+      max-width: 90%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .modal-header h3 {
+      margin: 0;
+      color: #d32f2f;
+    }
+    
+    .modal-header .close {
+      font-size: 24px;
+      cursor: pointer;
+      color: #888;
+    }
+    
+    .modal-body {
+      margin-bottom: 20px;
+    }
+    
+    .visitor-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .visitor-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 15px;
+      overflow: hidden;
+    }
+    
+    .visitor-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .visitor-details h4 {
+      margin: 0 0 5px 0;
+    }
+    
+    .visitor-details p {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    
+    .btn-cancel {
+      background: #f0f0f0;
+      color: #333;
+    }
+    
+    .btn-flag {
+      background: #d32f2f;
+      color: white;
+    }
+    
+    .btn-flag:hover {
+      background: #b71c1c;
+    }
+
+  .btn-unflag {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-unflag:hover {
+  background: #388E3C;
+}
+
+.unflag-btn i {
+  color: #4CAF50;
+}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <%- include ('includes/header') %>
+
+  <!-- Side Navigation -->
+  <%- include ('includes/sidenav') %>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h2>All Visitors</h2>
+      <div class="page-actions">
+        <button class="btn"><i class="fas fa-file-export"></i> Export</button>
+      </div>
+    </div>
+    
+    <div class="search-filter-container">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search visitors...">
+      </div>
+      
+      <div class="filter-group">
+        <select>
+          <option>All Types</option>
+          <option>New Visitors</option>
+          <option>Returning Visitors</option>
+        </select>
+        
+        <select>
+          <option>All Status</option>
+          <option>Checked In</option>
+          <option>Checked Out</option>
+          <option>Pending</option>
+        </select>
+        
+        <button class="btn"><i class="fas fa-filter"></i> Filter</button>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table class="visitors-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Age Range</th>
+            <th>Address</th>
+            <th>First Visit</th>
+            <th>Last Visit</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% result.forEach(row => { %>
+           <tr>
+            <td>
+              <div class="visitor-name-cell">
+              <div class="visitor-avatar">
+                <img src="../images/visitors/<%=row.photo%>" alt="<%= row?.first_name %> ">
+              </div>
+              <span><%= toProperCase(row?.title_rank) %> <%= row?.first_name %> <%= row?.last_name %> <small class="visitor-type">(<%= row?.visitor_type %>)</small> 
+              <% if(row?.is_flagged) { %> <i title="Flag Visitor" class="fas fa-flag" style="color: red;"></i> <% } %>
+              </span> 
+            </td>
+            <td><%= toProperCase(row.phone_number) %></td>
+            <td><%= toProperCase(row.age_range) %> yrs</td>
+            <td><%= toProperCase(row?.address) %>, <%= toProperCase(row?.city) %>, <%= toProperCase(row?.state) %></td>
+            <td><%= row?.first_visit ? new Date(row?.first_visit).toLocaleString([], {  month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : '' %></td>
+            <td><%= row?.last_visit ? new Date(row?.last_visit).toLocaleString([], {  month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : '' %></td>
+            <td>
+              <div class="action-buttons">
+              <button class="btn" onclick="window.location.href=`/admin/visitor_info?id=<%= row?.id %>`"><i class="fas fa-eye" title="Visitor Info"></i></button>
+              <% if(!row?.is_flagged) { %>
+              <button class="btn flag-btn" 
+                    data-visitor-id="<%= row?.id %>"
+                    data-name="<%= toProperCase(row?.title_rank) %> <%= row?.first_name %> <%= row?.last_name %>"
+                    data-photo="<%= row?.photo %>">
+              <i title="Flag Visitor" class="fas fa-flag"></i>
+            </button>
+            <% } else { %>
+            <button class="btn unflag-btn" 
+                    data-visitor-id="<%= row?.id %>"
+                    data-name="<%= toProperCase(row?.title_rank) %> <%= row?.first_name %> <%= row?.last_name %>"
+                    data-photo="<%= row?.photo %>">
+              <i title="UnFlag Visitor" class="far fa-flag"></i>
+            </button>
+            <% } %>
+            </div>
+            </td>
+          </tr>
+          <% }) %>       
+        </tbody>
+      </table>
+  
+      <!-- Pagination Controls -->
+      <div class="pagination">
+        <div class="pagination-info">Showing 1-10 of 24 visitors</div>
+        <div class="pagination-controls">
+          <button class="pagination-btn" disabled>
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="pagination-btn active">1</button>
+          <button class="pagination-btn">2</button>
+          <button class="pagination-btn">3</button>
+          <button class="pagination-btn">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="pagination-page-size">
+          <span>Rows per page:</span>
+          <select>
+            <option>10</option>
+            <option>25</option>
+            <option>50</option>
+            <option>100</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    </div>
+  </main>
+
+<!-- Flag Visitor Modal -->
+<div id="flagModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-flag" style="color: red;"></i> Flag Visitor</h3>
+      <span class="close">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="error-list"></div>
+      <div class="visitor-info">
+        <div class="visitor-avatar">
+          <img id="modalVisitorPhoto" src="" alt="Visitor Photo">
+        </div>
+        <div class="visitor-details">
+          <h4 id="modalVisitorName"></h4>
+        </div>
+      </div>
+      <div class="flag-error" style="color: red;"></div>
+      <div class="flag-success" style="color: green;"></div>
+      <form id="flagForm" method="POST" action="/api/flag_visitor">
+        <input type="hidden" id="visitorId" name="visitorId">
+        <div class="form-group">
+          <label for="reason">Reason for Flagging <span style="color:red">*</span></label>
+          <textarea id="reason" name="reason" required placeholder="Please specify the reason for flagging this visitor..."></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel">Cancel</button>
+      <button type="submit" class="btn btn-flag" id="confirmFlag">Flag Visitor</button>
+    </div>
+  </div>
+</div>
+
+<!-- Unflag Visitor Modal -->
+<div id="unflagModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="far fa-flag" style="color: green;"></i> Unflag Visitor</h3>
+      <span class="close">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="error-list"></div>
+      <div class="visitor-info">
+        <div class="visitor-avatar">
+          <img id="unflagModalVisitorPhoto" src="" alt="Visitor Photo">
+        </div>
+        <div class="visitor-details">
+          <h4 id="unflagModalVisitorName"></h4>
+        </div>
+      </div>
+      <div class="unflag-error" style="color: red;"></div>
+      <div class="unflag-success" style="color: green;"></div>
+      <form id="unflagForm" method="POST" action="/api/unflag_visitor">
+        <input type="hidden" id="unflagVisitorId" name="visitorId">
+        <!-- <div class="form-group">
+          <label for="unflagNotes">Notes (Optional)</label>
+          <textarea id="unflagNotes" name="notes" placeholder="Any notes about unflagging this visitor..."></textarea>
+        </div> -->
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel">Cancel</button>
+      <button type="submit" class="btn btn-flag" id="confirmUnflag" style="background: #4CAF50;">Unflag Visitor</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Get modal elements
+  const modal = document.getElementById("flagModal");
+  const closeBtn = document.querySelector(".close");
+  const cancelBtn = document.querySelector(".btn-cancel");
+  const flagBtns = document.querySelectorAll(".flag-btn");
+  const confirmFlagBtn = document.getElementById("confirmFlag");
+  
+  // When user clicks flag button
+  flagBtns.forEach(btn => {
+    btn.addEventListener("click", function() {
+      const visitorId = this.getAttribute("data-visitor-id");
+      const name = this.getAttribute("data-name");
+      const photo = this.getAttribute("data-photo");
+      
+      // Set modal content
+      document.getElementById("modalVisitorName").textContent = name;
+      document.getElementById("modalVisitorPhoto").src = "../images/visitors/" + photo;
+      document.getElementById("visitorId").value = visitorId;
+      document.getElementById("reason").value = "";
+      
+      // Show modal
+      modal.style.display = "block";
+    });
+  });
+  
+  // When user clicks close button
+  closeBtn.addEventListener("click", function() {
+    modal.style.display = "none";
+  });
+  
+  // When user clicks cancel button
+  cancelBtn.addEventListener("click", function() {
+    modal.style.display = "none";
+  });
+  
+  // When user clicks outside modal
+  window.addEventListener("click", function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  });
+  
+  // When user confirms flag
+  confirmFlagBtn.addEventListener("click", function() {
+  const form = document.getElementById("flagForm");
+  const reason = document.getElementById("reason").value.trim();
+    
+    if (!reason) {
+      document.querySelector('.flag-error').innerHTML = "Please provide a reason for flagging this visitor.";
+      return;
+    }
+    
+    // Here you would typically send the data to your backend
+    const visitorId = document.getElementById("visitorId").value;
+    const formData = {
+      visitorId: visitorId,
+      reason: reason
+    };
+    
+    console.log("Flagging visitor:", formData);
+    
+    // Example AJAX call (you would need to implement this properly)
+  
+    fetch('/api/flag-visitor', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        document.querySelector('.flag-success').innerHTML = "Visitor flagged successfully!";
+        modal.style.display = "none";
+        // Optionally refresh the page or update the UI
+        window.location.reload();
+      } else {
+        alert("Error flagging visitor: " + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert("An error occurred while flagging the visitor.");
+    });
+    
+    // For demo purposes, just show an alert
+    //alert(`Visitor ${visitorId} flagged with reason: ${reason}`);
+    modal.style.display = "none";
+  });
+</script>
+
+<script>
+  // Get unflag modal elements
+const unflagModal = document.getElementById("unflagModal");
+const unflagCloseBtn = unflagModal.querySelector(".close");
+const unflagCancelBtn = unflagModal.querySelector(".btn-cancel");
+const unflagBtns = document.querySelectorAll(".unflag-btn");
+const confirmUnflagBtn = document.getElementById("confirmUnflag");
+
+// When user clicks unflag button
+unflagBtns.forEach(btn => {
+  btn.addEventListener("click", function() {
+    const visitorId = this.getAttribute("data-visitor-id");
+    const name = this.getAttribute("data-name");
+    const photo = this.getAttribute("data-photo");
+    
+    // Set modal content
+    document.getElementById("unflagModalVisitorName").textContent = name;
+    document.getElementById("unflagModalVisitorPhoto").src = "../images/visitors/" + photo;
+    document.getElementById("unflagVisitorId").value = visitorId;
+    // document.getElementById("unflagNotes").value = "";
+    
+    // Clear any previous messages
+    document.querySelector('.unflag-error').innerHTML = "";
+    document.querySelector('.unflag-success').innerHTML = "";
+    
+    // Show modal
+    unflagModal.style.display = "block";
+  });
+});
+
+// When user clicks close button
+unflagCloseBtn.addEventListener("click", function() {
+  unflagModal.style.display = "none";
+});
+
+// When user clicks cancel button
+unflagCancelBtn.addEventListener("click", function() {
+  unflagModal.style.display = "none";
+});
+
+// When user confirms unflag
+confirmUnflagBtn.addEventListener("click", function() {
+  const form = document.getElementById("unflagForm");
+  const visitorId = document.getElementById("unflagVisitorId").value;
+  // const notes = document.getElementById("unflagNotes").value.trim();
+  
+  const formData = {
+    visitorId: visitorId
+//    notes: notes
+  };
+  
+  fetch('/api/unflag-visitor', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    body: JSON.stringify(formData)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      document.querySelector('.unflag-success').innerHTML = "Visitor unflagged successfully!";
+      setTimeout(() => {
+        unflagModal.style.display = "none";
+        window.location.reload();
+      }, 1000);
+    } else {
+      document.querySelector('.unflag-error').innerHTML = "Error unflagging visitor: " + data.message;
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    document.querySelector('.unflag-error').innerHTML = "An error occurred while unflagging the visitor.";
+  });
+});
+</script>
+
+<script type="module" src="../scripts/admin.js"></script>
+</body>
+</html>

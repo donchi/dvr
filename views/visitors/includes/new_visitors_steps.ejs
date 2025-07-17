@@ -1,0 +1,201 @@
+
+     <!-- new visitor step 1 -->
+    <div id="new-visitor-step1" style="display: <%= currentStep === 1 ? 'block' : 'none' %>">
+      <h2 style="text-align: center;">New Visitor Check In</h2>
+      <div class="error-list">
+      </div>
+      
+      <form id="step1-form" method="POST" action="/visitors/submit-step1">
+        <div class="form-objects">
+          <div class="form-col">
+            <input type="text" name="title_rank" placeholder="Title/Rank">
+            <input type="text" name="fname" placeholder="First Name" autocomplete="off" required>
+          </div>
+          <div class="form-col">
+             <input type="text" name="lname" placeholder="Last Name" 
+                   autocomplete="off" required>
+            <input type="tel" name="phone" placeholder="Mobile Number (e.g 08023299900)" 
+                 autocomplete="off" required>
+          </div>
+          <div class="form-col">
+            <select name="gender" id="gender" >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+            <select name="age_range" id="age_range" >
+              <option value="">Select Age-Range</option>
+              <option value="18-30">18 - 30yrs</option>
+              <option value="31-40">31 - 40yrs</option>
+              <option value="41-50">41 - 50yrs</option>
+              <option value="51-100">51yrs - above</option>
+            </select>
+          </div>
+          <div class="form-col">
+                  <select name="state" id="state" >
+                  <option value="">State of Residence</option>
+                  <option value="abuja">Abuja</option>
+                  <option value="lagos">Lagos</option>
+                  <option value="ogun">Ogun</option>
+                  <option value="benue">Benue</option>
+                </select>
+                  <select name="city_lga" id="city_lga" >
+                <option value="">City/LGA</option>
+                <option value="lokogoma">Lokogoma</option>
+                <option value="gudu">Gudu</option>
+                <option value="wuse">Wuse</option>
+                <option value="kubwa">Kubwa</option>
+              </select>
+              <input type="text" name="address" placeholder="Address" 
+                 autocomplete="off" required> 
+          </div>
+        </div>
+        <div class="action-btn">
+          <button type="button" class="back-btn-new-visitor" data-step="0">Back</button>
+          <button type="submit">Next</button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- new visitors step 2 -->
+    <div id="new-visitor-step2" style="display: <%= currentStep === 2 ? 'block' : 'none' %>">
+      <h2 style="text-align: center;">New Visitor Check In</h2>
+      <p>A verification code has been sent to <strong id="phone-display"></strong></p>
+      <div class="error-list"></div>
+      <div class="success-container"></div>
+      <form id="step2-form" method="POST" action="/visitors/submit-step2">
+        <div class="form-objects" style="width: 700px;">
+          <input type="text" id="verification-input" name="verification_code" placeholder="Enter verification code" required>
+          
+        </div>
+        <div class="action-btn">
+          <button type="button" class="back-btn-new-visitor" data-step="1">Back</button>
+          <button type="button" id="resend-code-btn" style=" background-color: #f44336;">Resend Code</button>
+          <button type="submit">Verify</button>
+        </div>
+      </form>
+    </div>
+
+        <!-- new visitors step 3 -->
+    <div id="new-visitor-step3" style="display: <%= currentStep === 3 ? 'block' : 'none' %>">
+      <h2 style="text-align: center;">New Visitor Check In</h2>
+      <p>Enter a 4-digit Passcode. <br><small>
+         <b>Do not use your bank codes.</b> Passcode will be used to login when next you come.
+      </small></p>
+      <div class="error-list"></div>
+      <form id="step3-form" method="POST" action="/visitors/submit-step3">
+        <div class="form-objects" style="width: 600px;">
+          <input type="password" name="passcode" placeholder="Enter Passcode (4 digits)" maxlength="4" required>
+          <!-- inputmode="numeric" pattern="\d{4}"  -->
+           <input type="password" name="cpasscode" placeholder="Confirm Passcode" maxlength="4" required>
+        </div>
+        <div class="action-btn">
+          <button type="button" class="back-btn-new-visitor" data-step="2">Back</button>
+          <button type="submit">Next</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- new visitors step 4 -->
+    <div id="new-visitor-step4" style="display: <%= currentStep === 4 ? 'block' : 'none' %>">
+      <h2 style="text-align: center;">New Visitor Check In</h2>
+      <div class="error-list"></div>
+      <form id="step4-form" action="visitors/submit-step4" method="POST">
+          <div class="form-objects">
+            <input type="text" name="purpose_of_visit" placeholder="Purpose of Visit"   required>
+            <input type="text" name="person_to_see" placeholder="Person to see"  required>
+            <div class="form-col">
+              <select name="dept" id="dept_new">
+                <option value="">Select Destination</option>
+                <option value="dispatch">Dispatch</option>
+                <option value="int_sy">Int/Sys</option>
+                <option value="it">IT</option>
+                <option value="logistics">Logistics</option>
+                <option value="hr">HR</option>
+              </select>
+              <select name="hasAppt" id="hasAppt_new">
+                <option value="">Do you have an Appt.?</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+        </div>
+        <div class="action-btn">
+          <button type="button" class="back-btn-new-visitor" data-step="3">Back</button>
+          <button type="submit">Next</button>
+        </div>
+      </form>
+     
+    </div>
+
+    <!-- new visitors step 5 -->
+    <div id="new-visitor-step5" style="display: <%= currentStep === 5 ? 'block' : 'none' %>">
+      <h2 style="text-align: center;">New Visitor Check In</h2>
+      <div class="error-list"></div>
+      <form id="step5-form" action="/visitors/submit-step5" method="POST" enctype="multipart/form-data">
+        <div class="form-objects">
+          <!-- Webcam Preview -->
+          <div id="webcam-container" style="border:4px dashed #ccc; width: 450px; height: 450px; position: relative; border-radius: 50%; overflow: hidden; margin: 0 auto;">
+            <video id="webcam" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover; overflow: hidden; "></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+            <img id="photo-preview" style="display: none; width: 100%; height: 100%; object-fit: cover;"/>
+          </div>
+          
+          <!-- Hidden field to store photo data -->
+          <input type="file" id="photo-file" name="photo" accept="image/*" style="display: none;">
+        </div>
+        <div class="action-btn">
+          <button type="button" class="back-btn-new-visitor" data-step="4">Back</button>
+          <button type="button" id="capture-btn">Capture Photo</button>
+          <button type="button" id="retake-btn" style="display: none;">Retake</button>
+          <button style="background-color: chocolate;" type="submit" id="submit-btn" disabled>Check In</button>
+        </div>
+      </form>
+    </div>
+
+<div id="new-visitor-step6" style="display: <%= currentStep === 6 ? 'block' : 'none' %>">
+  <div style="color: white; text-align: center;">
+    <div class="visitor-avatar">
+      <img src="/images/visitors/<%=photo%>" alt="Visitor Photo">
+    </div>
+    <h1>Please hold <%=title_rank%> <%=first_name%> while we check you in</h1>
+    <div id="status-indicator"></div>
+    <h3><%- include ("../../admin/config/full_name") %> HEADQUARTERS</h3>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const visitId = '<%=visit_id%>';
+    console.log('visit id', visitId);
+    let checkInterval;
+    const step6 = document.getElementById('new-visitor-step6');
+
+    function checkStatus() {
+        fetch(`/visitors/status/${visitId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const statusIndicator = document.getElementById('status-indicator');
+                    
+                    if (data.status === 'checked in') {
+                        statusIndicator.innerHTML = `<span class="status-badge active">${data.status.toUpperCase()} </span> <h5> Redirecting to home...</h5>`;
+                        clearInterval(checkInterval);
+                        // Optionally redirect or show success message
+                        setTimeout(() => {
+                            window.location.href = '/visitors'; // Change this to your success URL
+                        }, 10000);
+                    } else {
+                        statusIndicator.innerHTML = `<span class="status-badge pending">${data.status.toUpperCase()}... </span>`;
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    if (step6 && step6.style.display === 'block') {
+        checkInterval = setInterval(checkStatus, 5000);
+        checkStatus(); // Initial check
+    }
+});
+</script>

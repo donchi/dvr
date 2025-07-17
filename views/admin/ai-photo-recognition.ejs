@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Photo Recognition - Digital Visitor Registry (DVR)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="shortcut icon" href="../images/favicon.png" type="image/png">
+</head>
+<body>
+  <!-- Header -->
+  <%- include ('includes/header') %>
+
+  <!-- Side Navigation -->
+  <%- include ('includes/sidenav') %>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h2>AI Photo Recognition</h2>
+      <div class="page-actions">
+        <button class="btn primary"><i class="fas fa-history"></i> Search History</button>
+      </div>
+    </div>
+
+    <div class="ai-recognition-container">
+      <div class="specimen">
+        <div class="upload-section">
+          <div class="upload-box" id="uploadBox">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <h3>Upload Visitor Photo</h3>
+            <p>Drag & drop an image here or click to browse</p>
+          
+            <input type="file" id="photoUpload" accept="image/*" capture="camera" hidden>
+            <button class="btn primary" onclick="document.getElementById('photoUpload').click()">
+              <i class="fas fa-folder-open"></i> Browse Files
+            </button>
+          </div>
+          <div class="uploaded-preview" id="uploadedPreview" style="display: none;">
+            <div class="preview-image-container">
+              <img id="previewImage" src="" alt="Uploaded photo">
+              <button class="btn clear-btn" id="clearUpload">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <button class="btn primary" style="margin-top: 30px; padding: 10px 15px;" id="searchBtn">
+              <i class="fas fa-search"></i> Search Database For Photo
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="result">
+        <div class="results-section" id="resultsSection">
+          <h3 >Search Results</h3>
+          <div class="match-result" id="match-result">
+
+          </div>
+        </div>
+
+        <div class="no-results" id="noResults" style="display: none;">
+          <i class="fas fa-user-slash"></i>
+          <h3>No Matches Found</h3>
+          <p>This visitor doesn't appear to be in our database.</p>
+          
+        </div>
+      </div>
+
+    </div>
+    </main>
+<script type="module" src="../scripts/components/ai-photo-recognition.js"></script>
+</body>

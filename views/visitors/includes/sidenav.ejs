@@ -1,0 +1,39 @@
+  <div class="sidenav" id="sidenav" style="display: none;">
+    <ul >
+       <li><button class="sidenav-btn" data-nav="returning-visitor-step2"><i class="fas fa-home"></i> Home</button></li>
+      <li><button class="sidenav-btn" data-nav="update-visitor-info"><i class="fas fa-pen-to-square"></i> Update Details</button></li>
+      <li><button  class="sidenav-btn" data-nav="recapture-photo"><i class="fas fa-camera-retro"></i> Re-capture Photo</button></li>
+      <li><button  class="sidenav-btn" data-nav="change-phone"><i class="fas fa-phone"></i> Change Phone</button></li>     
+      <li><button  class="sidenav-btn" data-nav="change-passcode"><i class="fas fa-key"></i> Change Passcode</button></li>
+      <li><button class="sidenav-btn" data-nav="returning-visitor-step1"><i class="fas fa-unlock-keyhole"></i> Log out</button></li>
+    </ul>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', ()=> {
+    document.querySelectorAll('.sidenav-btn').forEach(button => {
+      button.addEventListener('click', ()=>{
+        
+      // Hide all content first
+      document.querySelectorAll('.nav-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      const dataNav = button.getAttribute('data-nav');
+      
+      // show selected element
+      showNav(dataNav);
+      })
+    });
+
+function showNav(dataNav) {
+  const element = document.getElementById(dataNav);
+  if (element) {
+    element.style.display = 'block'; // or whatever display type you need
+  } else {
+    console.error(`Element with ID "${dataNav}" not found`);
+  }
+}
+  })
+
+  </script>

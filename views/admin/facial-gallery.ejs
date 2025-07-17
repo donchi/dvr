@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facial Gallery - Digital Visitor Registry (DVR)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="shortcut icon" href="../images/favicon.png" type="image/png">
+
+    <style>
+    /* Additional styles for the gallery */
+    .gallery-container {
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+    
+    .gallery-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #f9f9f9;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    
+    .gallery-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      background: white;
+    }
+    
+    .gallery-item .visitor-info {
+      text-align: center;
+    }
+    
+    .gallery-item .visitor-info h4 {
+      margin: 0;
+      font-size: 16px;
+      color: #333;
+    }
+    
+    .gallery-item .visitor-info p {
+      margin: 5px 0 0;
+      font-size: 14px;
+    }
+    
+    /* Updated modal styles */
+    .gallery-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+    }
+    
+    .gallery-modal .modal-content {
+      background-color: #eee;
+      margin: 2% auto;
+      padding: 0;
+      width: 900px;
+      max-width: 95%;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      color: #eee;
+    }
+    
+    .gallery-modal .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #999;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #eee;
+    }
+    
+    .gallery-modal .modal-header h3 {
+      margin: 0;
+      color: #444;
+      font-size: 24px;
+    }
+    
+    .gallery-modal .modal-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .gallery-modal .modal-body {
+      padding: 30px;
+    }
+    
+    .gallery-modal .modal-visitor-info {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+    }
+    
+    .gallery-modal .visitor-details {
+      flex-grow: 1;
+    }
+    
+    .gallery-modal .detail-row {
+      display: flex;
+      margin-bottom: 15px;
+      color: #444;
+    }
+    
+    .gallery-modal .detail-label {
+      width: 120px;
+      color: #444;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+    
+    .gallery-modal .detail-value {
+      flex-grow: 1;
+      color: #333;
+    }
+
+    .gallery-modal .visitor-avatar.larger {
+      width: 300px;
+      height: 300px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .gallery-modal .visitor-avatar.larger img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .status-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+    }
+
+
+    /* Search and filter controls */
+    .controls-container {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 15px 10px 40px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .filter-group {
+      min-width: 200px;
+    }
+
+    .filter-group select {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      background: white;
+    }
+
+    .sort-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .sort-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #666;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: #f5f5f5;
+    }
+
+    .sort-btn:hover {
+      background: #e0e0e0;
+    }
+
+    .sort-btn.active {
+      color: var(--primary);
+    }
+
+    .sort-btn i {
+      font-size: 12px;
+    }
+    
+    @media (max-width: 768px) {
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+      
+      .gallery-modal .modal-visitor-info {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .gallery-modal .detail-row {
+        flex-direction: column;
+        gap: 5px;
+      }
+      
+      .gallery-modal .detail-label {
+        width: 100%;
+      }
+      
+      .gallery-modal .modal-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .controls-container {
+        flex-direction: column;
+      }
+
+      .search-box, .filter-group {
+        width: 100%;
+      }
+
+      .sort-controls {
+        justify-content: flex-end;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <%- include ('includes/header') %>
+
+  <!-- Side Navigation -->
+  <%- include ('includes/sidenav') %>
+
+  <!-- Main Content -->
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h2>Facial Gallery</h2>
+      <div class="page-actions">
+        <button class="btn" id="startSlideshow">
+          <i class="fas fa-play"></i> Start Slideshow
+        </button>
+      </div>
+    </div>
+
+    <!-- Search and Filter Controls -->
+    <div class="controls-container">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search visitors..." style="width: 95%; box-sizing: border-box;">
+      </div>
+      <div class="filter-group">
+        <select id="statusFilter">
+          <option value="all">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="flagged">Flagged</option>
+        </select>
+      </div>
+      <div class="sort-controls">
+        <button class="sort-btn" id="sortAsc">
+          <i class="fas fa-sort-alpha-down"></i> A-Z
+        </button>
+        <button class="sort-btn" id="sortDesc">
+          <i class="fas fa-sort-alpha-down-alt"></i> Z-A
+        </button>
+      </div>
+    </div>
+
+    <div class="gallery-container">
+      <div class="gallery-grid" id="galleryGrid">
+        <!-- Visitor data will be inserted here by JavaScript -->
+      </div>
+    </div>
+
+    <div class="pagination">
+      <div class="pagination-info">Showing 1-20 of 124 visitors</div>
+      <div class="pagination-controls">
+        <button class="pagination-btn" disabled><i class="fas fa-chevron-left"></i></button>
+        <button class="pagination-btn active">1</button>
+        <button class="pagination-btn">2</button>
+        <button class="pagination-btn">3</button>
+        <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
+      </div>
+      <div class="pagination-page-size">
+        <span>Show</span>
+        <select>
+          <option>20</option>
+          <option>50</option>
+          <option>100</option>
+        </select>
+        <span>per page</span>
+      </div>
+    </div>
+  </main>
+  
+
+  <!-- Gallery Modal -->
+  <div class="gallery-modal" id="galleryModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalVisitorName">Visitor Name</h3>
+        <div class="modal-actions">
+          <button class="btn" id="prevBtn"><i class="fas fa-chevron-left"></i> Previous</button>
+          <button class="btn" id="nextBtn">Next <i class="fas fa-chevron-right"></i></button>
+          <button class="btn" id="slideshowBtn"><i class="fas fa-play"></i> Slideshow</button>
+          <button class="close-btn" id="closeModal">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-visitor-info">
+          <div class="visitor-avatar larger">
+            <img id="modalVisitorImage" src="" alt="Visitor">
+          </div>
+          <div class="visitor-details">
+            <div class="status-header" style="float: right;">
+              <div id="modalVisitorStatus"><span class="status-badge active">Active</span></div>
+              <div id="modalVisitorFlag"><i class="fas fa-flag" style="color: red;"></i> Flagged</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label"><i class="fas fa-id-card"></i> Name:</div>
+              <div class="detail-value" id="modalVisitorName2"></div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label"><i class="fas fa-phone"></i> Phone:</div>
+              <div class="detail-value" id="modalVisitorPhone">08012345678</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label"><i class="fas fa-map-marker-alt"></i> Address:</div>
+              <div class="detail-value" id="modalVisitorAddress">12 Awolowo Road, Ikeja, Lagos</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label"><i class="fas fa-venus-mars"></i> Gender:</div>
+              <div class="detail-value" id="modalVisitorGender">Male</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label"><i class="fas fa-user"></i> Age Range:</div>
+              <div class="detail-value" id="modalVisitorAge">30-35</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label"><i class="fas fa-calendar"></i> First Visit:</div>
+              <div class="detail-value" id="modalVisitorFirstVisit">2023-01-15</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label"><i class="fas fa-calendar"></i> Last Visit:</div>
+              <div class="detail-value" id="modalVisitorLastVisit">2023-06-15</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label"><i class="fas fa-clock"></i> Total Visits:</div>
+              <div class="detail-value" id="modalVisitorVisits">5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <script>
+    // Nigerian names database
+    const nigerianNames = {
+      male: ['Emeka', 'Chinedu', 'Oluwaseun', 'Adebayo', 'Ibrahim', 'Mohammed', 'Yusuf', 'Obinna', 'Chukwuemeka', 'Adewale'],
+      female: ['Amina', 'Chioma', 'Folake', 'Ngozi', 'Bisi', 'Fatima', 'Aisha', 'Olamide', 'Temitope', 'Adanna'],
+      lastNames: ['Okonkwo', 'Adeleke', 'Okafor', 'Mohammed', 'Eze', 'Obi', 'Yakubu', 'Balogun', 'Ogunlesi', 'Ibeh']
+    };
+
+    // Generate random Nigerian visitors
+    async function generateNigerianVisitors() {
+      try {
+        // Fetch black avatars from randomuser.me with African nationalities
+        // Using South Africa (ZA), Nigeria (NG), Kenya (KE), Ghana (GH), Uganda (UG)
+        const response = await fetch('https://randomuser.me/api/?results=20&nat=za,ng,ke,gh,ug&inc=picture,nat&noinfo');
+        const data = await response.json();
+        
+        const visitorDetails = data.results.map((user, index) => {
+          // Generate random Nigerian name
+          const isMale = Math.random() > 0.5;
+          const firstName = isMale 
+            ? nigerianNames.male[Math.floor(Math.random() * nigerianNames.male.length)]
+            : nigerianNames.female[Math.floor(Math.random() * nigerianNames.female.length)];
+          const lastName = nigerianNames.lastNames[Math.floor(Math.random() * nigerianNames.lastNames.length)];
+          const fullName = `${firstName} ${lastName}`;
+          
+          // Generate random visit data
+          const firstVisit = new Date();
+          firstVisit.setDate(firstVisit.getDate() - Math.floor(Math.random() * 365));
+          
+          const lastVisit = new Date(firstVisit);
+          lastVisit.setDate(lastVisit.getDate() + Math.floor(Math.random() * 30));
+          
+          const totalVisits = Math.floor(Math.random() * 10) + 1;
+          
+          // Random status (70% active, 20% flagged, 10% inactive)
+          const statusRand = Math.random();
+          let status = 'active';
+          if (statusRand > 0.9) status = 'inactive';
+          else if (statusRand > 0.7) status = 'flagged';
+          
+          // Generate Nigerian phone number
+          const phonePrefix = ['080', '081', '070', '090'][Math.floor(Math.random() * 4)];
+          const phoneNumber = phonePrefix + Math.floor(10000000 + Math.random() * 90000000).toString();
+          
+          // Generate random address
+          const streets = ['Awolowo', 'Bishop', 'Marina', 'Allen', 'Broad', 'Adetokunbo'];
+          const cities = ['Lagos', 'Abuja', 'Port Harcourt', 'Kano', 'Ibadan', 'Enugu'];
+          const address = `${Math.floor(Math.random() * 100) + 1} ${streets[Math.floor(Math.random() * streets.length)]} Road, ${cities[Math.floor(Math.random() * cities.length)]}`;
+          
+          return {
+            id: `V-2023-${(index + 1).toString().padStart(3, '0')}`,
+            name: fullName,
+            image: user.picture.large,
+            firstVisit: firstVisit.toISOString().split('T')[0],
+            lastVisit: lastVisit.toISOString().split('T')[0],
+            status: status,
+            visits: totalVisits,
+            phone: phoneNumber,
+            address: address,
+            gender: isMale ? 'Male' : 'Female',
+            ageRange: `${Math.floor(Math.random() * 20) + 20}-${Math.floor(Math.random() * 20) + 25}`,
+            flagged: status === 'flagged',
+            nationality: user.nat // Added nationality from API
+          };
+        });
+        
+        return visitorDetails;
+      } catch (error) {
+        console.error('Error fetching random users:', error);
+        return [];
+      }
+    }
+
+
+    // Populate gallery with Nigerian visitors
+    async function populateGallery() {
+      const visitors = await generateNigerianVisitors();
+      const galleryGrid = document.getElementById('galleryGrid');
+      galleryGrid.innerHTML = '';
+      
+      visitors.forEach((visitor, index) => {
+        const statusClass = visitor.status === 'active' ? 'active' : 
+                          visitor.status === 'flagged' ? 'pending' : 'inactive';
+        
+        const galleryItem = document.createElement('div');
+        galleryItem.className = 'gallery-item';
+        galleryItem.setAttribute('data-status', visitor.status);
+        galleryItem.innerHTML = `
+          <div class="visitor-avatar large" data-index="${index}">
+            <img src="${visitor.image}" alt="${visitor.name}">
+          </div>
+          <div class="visitor-info">
+            <h4>${visitor.name}</h4>
+            <p><span class="status-badge ${statusClass}">${visitor.status}</span></p>
+          </div>
+        `;
+        galleryGrid.appendChild(galleryItem);
+      });
+      
+      return visitors;
+    }
+
+    // DOM elements
+    const galleryModal = document.getElementById('galleryModal');
+    const closeModal = document.getElementById('closeModal');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideshowBtn = document.getElementById('slideshowBtn');
+    const startSlideshow = document.getElementById('startSlideshow');
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const sortAsc = document.getElementById('sortAsc');
+    const sortDesc = document.getElementById('sortDesc');
+    let visitorDetails = [];
+    let currentIndex = 0;
+    let slideshowInterval = null;
+    let currentSort = null;
+
+    // Initialize the gallery
+    populateGallery().then(visitors => {
+      visitorDetails = visitors;
+      
+      // Add click event to each avatar
+      document.querySelectorAll('.visitor-avatar.large').forEach(avatar => {
+        avatar.addEventListener('click', function() {
+          currentIndex = parseInt(this.getAttribute('data-index'));
+          openModal(currentIndex);
+        });
+      });
+    });
+
+    // Open modal with visitor details
+    function openModal(index) {
+      const visitor = visitorDetails[index];
+      const statusClass = visitor.status === 'active' ? 'active' : 
+                        visitor.status === 'flagged' ? 'flagged' : 'inactive';
+      
+      document.getElementById('modalVisitorName').textContent = visitor.name;
+      document.getElementById('modalVisitorImage').src = visitor.image;
+      document.getElementById('modalVisitorImage').alt = visitor.name;
+      document.getElementById('modalVisitorName2').textContent = visitor.name;
+      document.getElementById('modalVisitorFirstVisit').textContent = visitor.firstVisit;
+      document.getElementById('modalVisitorLastVisit').textContent = visitor.lastVisit;
+      document.getElementById('modalVisitorVisits').textContent = visitor.visits;
+      document.getElementById('modalVisitorPhone').textContent = visitor.phone;
+      document.getElementById('modalVisitorAddress').textContent = visitor.address;
+      document.getElementById('modalVisitorGender').textContent = visitor.gender;
+      document.getElementById('modalVisitorAge').textContent = visitor.ageRange;
+      
+      // Update status and flag display
+      document.getElementById('modalVisitorStatus').innerHTML = 
+        `<span class="status-badge ${statusClass}">${visitor.status.toUpperCase()}</span>`;
+      
+      const flagElement = document.getElementById('modalVisitorFlag');
+      if (visitor.flagged) {
+        flagElement.innerHTML = '<i class="fas fa-flag" style="color: red;"></i> Flagged';
+        flagElement.style.display = 'block';
+      } else {
+        flagElement.style.display = 'none';
+      }
+      
+      galleryModal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close modal
+    function closeModalFunc() {
+      galleryModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+      stopSlideshow();
+    }
+
+    // Navigate to previous visitor
+    function showPrev() {
+      currentIndex = (currentIndex - 1 + visitorDetails.length) % visitorDetails.length;
+      openModal(currentIndex);
+    }
+
+    // Navigate to next visitor
+    function showNext() {
+      currentIndex = (currentIndex + 1) % visitorDetails.length;
+      openModal(currentIndex);
+    }
+
+    // Start slideshow
+    function startSlideshowFunc() {
+      if (slideshowInterval) {
+        stopSlideshow();
+        return;
+      }
+      
+      slideshowBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Slideshow';
+      slideshowInterval = setInterval(showNext, 3000);
+    }
+
+    // Stop slideshow
+    function stopSlideshow() {
+      if (slideshowInterval) {
+        clearInterval(slideshowInterval);
+        slideshowInterval = null;
+        slideshowBtn.innerHTML = '<i class="fas fa-play"></i> Slideshow';
+      }
+    }
+
+    // Filter and search functionality
+    function filterGallery() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const statusValue = statusFilter.value;
+      
+      document.querySelectorAll('.gallery-item').forEach(item => {
+        const name = item.querySelector('h4').textContent.toLowerCase();
+        const status = item.getAttribute('data-status');
+        const matchesSearch = name.includes(searchTerm);
+        const matchesStatus = statusValue === 'all' || status === statusValue;
+        
+        if (matchesSearch && matchesStatus) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Sort functionality
+    function sortGallery(direction) {
+      const items = Array.from(document.querySelectorAll('.gallery-item'));
+      
+      items.sort((a, b) => {
+        const nameA = a.querySelector('h4').textContent.toLowerCase();
+        const nameB = b.querySelector('h4').textContent.toLowerCase();
+        
+        if (direction === 'asc') {
+          return nameA.localeCompare(nameB);
+        } else {
+          return nameB.localeCompare(nameA);
+        }
+      });
+      
+      // Clear the grid
+      const galleryGrid = document.getElementById('galleryGrid');
+      galleryGrid.innerHTML = '';
+      
+      // Re-add sorted items
+      items.forEach(item => {
+        galleryGrid.appendChild(item);
+      });
+      
+      // Update sort button states
+      sortAsc.classList.toggle('active', direction === 'asc');
+      sortDesc.classList.toggle('active', direction === 'desc');
+      currentSort = direction;
+      
+      // Reattach click events
+      document.querySelectorAll('.visitor-avatar.large').forEach(avatar => {
+        avatar.addEventListener('click', function() {
+          currentIndex = parseInt(this.getAttribute('data-index'));
+          openModal(currentIndex);
+        });
+      });
+    }
+
+    // Event listeners
+    closeModal.addEventListener('click', closeModalFunc);
+    prevBtn.addEventListener('click', showPrev);
+    nextBtn.addEventListener('click', showNext);
+    slideshowBtn.addEventListener('click', startSlideshowFunc);
+    startSlideshow.addEventListener('click', function() {
+      currentIndex = 0;
+      openModal(currentIndex);
+      startSlideshowFunc();
+    });
+    searchInput.addEventListener('input', filterGallery);
+    statusFilter.addEventListener('change', filterGallery);
+    sortAsc.addEventListener('click', () => sortGallery('asc'));
+    sortDesc.addEventListener('click', () => sortGallery('desc'));
+
+    // Close modal when clicking outside
+    galleryModal.addEventListener('click', function(e) {
+      if (e.target === galleryModal) {
+        closeModalFunc();
+      }
+    });
+
+    // Initialize with ascending sort
+    setTimeout(() => sortGallery('asc'), 500);
+  </script>
+</body>
+</html>

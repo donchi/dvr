@@ -1,0 +1,12 @@
+ <nav class="sidenav">
+    <ul>
+      <a href="/admin/dashboard"><li><button class="<%= pg === 'dashboard' ? 'active' : '' %>"><i class="fas fa-tachometer-alt" data-nav="dashboard"></i> Dashboard</button></li></a>
+      <a href="/admin/today-visitors"><li><button class="<%= pg === 'today_visitors' ? 'active' : '' %>" data-nav="today_visitors"><i class="fas fa-users" ></i> Today's Visitors</button></li></a>
+      <a href="/admin/all-visitors"><li><button class="<%= pg === 'all_visitors' ? 'active' : '' %>" data-nav="all_visitors"><i class="fas fa-list"></i> All Visitors</button></li></a>
+      <a href="/admin/facial-gallery"><li><button class="<%= pg === 'facial_gallery' ? 'active' : '' %>" data-nav="facial_gallery"><i class="fas fa-image"></i> Facial Gallery</button></li></a>
+      <a href="/admin/flagged-visitors"><li><button class="<%= pg === 'flagged_visitors' ? 'active' : '' %>"><i class="fas fa-flag"></i> Flagged Visitors</button></li></a>
+      <a href="/admin/manual-checkin-visitors"><li><button class="<%= pg === 'manual-checkin-visitors' ? 'active' : '' %>"><i class="fas fa-star"></i> Manual Checked-In Visitors</button></li></a>
+      <a href="/admin/ai-photo-recognition"><li><button class="<%= pg === 'ai_recognition' ? 'active' : '' %>"><i class="fas fa-camera"></i> AI Photo Recognition</button></li></a>
+      <a href="/admin/settings"><li><button class="<%= pg === 'settings' ? 'active' : '' %>"><i class="fas fa-cog"></i> Settings</button></li></a>
+    </ul>
+  </nav>

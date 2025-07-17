@@ -1,0 +1,276 @@
+  
+  :root {
+    /* DHQ */
+    --background-color: #19488A; 
+    --action-button: #289EE6; 
+    /* CUSTOMS */
+    --background-color: #24793C; 
+    --action-button: #3AC05E; 
+  }
+
+body{
+  font-family: Roboto;
+  background-color: var(--background-color);
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+header, main {
+  width: 100%;
+  text-align: center;
+}
+
+.logo{
+  display: block;
+  margin: 0px auto;
+  width: 600px;
+  text-align: center;
+}
+
+.logo img{
+  max-width: 300px;
+  border-radius: 30%;
+}
+
+h2{
+  font-weight: bold;
+  font-size: 40px;
+  color: white;
+  margin-bottom: 30px;
+}
+
+h3{
+  font-weight: bold;
+  font-size: 30px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+p{
+  color: white;
+  font-size: 24px;
+  text-align: center;
+}
+
+.top-nav{
+  top: 10px; 
+  right: 10px; 
+  position: absolute;
+  width: 300px; 
+  display: flex; 
+  justify-content: space-between;
+}
+
+.top-nav button{
+  z-index: 10; 
+  font-size: 22px; 
+  background-color: var(--action-button); 
+  border: 0; 
+  padding: 10px 20px; 
+  border-radius: 10px;
+  color: white;
+}
+
+.action-btn{
+  display: flex;
+  gap: 50px;
+  margin: 0px auto;
+  justify-content: center;
+}
+
+.action-btn button{
+  padding: 20px 30px;
+  border: none;
+  border-radius: 20px;
+  background-color: var(--action-button);
+  font-size: 30px;
+  color: white;
+  text-decoration: none;
+  box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.1s;
+  margin-top: 20px;
+}
+
+.action-btn button:active{
+  box-shadow: none;
+}
+
+.verify-btn{
+  padding: 20px 30px;
+  border: none;
+  border-radius: 20px;
+  background-color:chocolate;
+  font-size: 30px;
+  color: white;
+  text-decoration: none;
+  box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.1s;
+  margin-bottom: 50px;
+  width: 200px;
+  text-align: center;
+}
+
+.verify-btn:active{
+  box-shadow: none;
+}
+
+.form-objects{
+  display: flex;
+  margin: 0px auto;
+  width: 900px;
+  text-align: center;
+  flex-direction: column;
+}
+
+.form-objects input,
+.form-objects select{
+  border: none;
+  font-size: 30px;
+  padding: 20px;
+  width: 100%;
+  margin: 20px 0px;
+  background-color:white;
+  border-radius: 20px;
+  display: block;
+}
+
+.form-col{
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.error-list{
+  display: none;
+  border: 1px solid #eaadad;
+  background-color: antiquewhite;
+  color: #333;
+  font-size: 20px;
+  border-radius: 10px;
+}
+
+.success-container{
+  display: none;
+  color: green;
+  font-size: 26px;
+  font-weight: bold;
+  padding: 20px;
+  text-align: center;
+  /* background-color: antiquewhite; */
+  background-color: rgb(179, 235, 177);
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.action-btn.secondary-btn {
+  background-color: #f44336;
+}
+
+#webcam-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+#capture-btn, #retake-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#retake-btn {
+  background-color: #f44336;
+  display: none;
+}
+
+#photo-preview {
+  object-fit: cover;
+}
+
+.visitor-avatar {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid white;
+  box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.2);
+  margin: 0px auto;
+}
+
+.visitor-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.status-badge {
+padding: 8px 10px;
+border-radius: 4px;
+font-size: 24px;
+font-weight: 500;
+background-color: #eee;
+}
+
+.status-badge.active {
+background: #e6ffe6;
+color: #2e7d32;
+}
+
+.status-badge.pending {
+background: rgb(255, 242, 219);
+color: orange;
+}
+
+.status-badge.inactive {
+background: #ffebee;
+color: #c64040;
+}
+
+.sidenav {
+  position: fixed;
+  right: 0;
+  top: 20%;
+  width: 270px;
+  padding: 10px;
+  z-index: 10;
+  box-shadow: 4px 6px 8px rgba(0, 0, 0, 0.2);
+  background-color: var(--backround-color);
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-radius: 10px 0px 0px 10px;
+}
+
+.sidenav ul {
+  padding: 0;
+  margin: 0;
+}
+
+.sidenav li {
+  list-style: none;
+}
+
+.sidenav button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  font-size: 24px;
+  padding: 25px 10px;
+  color: white;
+  background-color: transparent;
+  border: none;
+  text-align: left;
+}
+
+.sidenav button i {
+  width: 24px;
+  text-align: center;
+  margin-right: 10px;
+}
+
+.sidenav button:active{
+  background-color: #19488A;
+}
