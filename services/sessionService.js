@@ -14,7 +14,8 @@ function setupSession(app) {
     },
     rolling: true, // Reset maxAge on every request
     store: new MongoStore({
-      mongoUrl: 'mongodb://localhost:27017/sessions',
+      // mongoUrl: 'mongodb://localhost:27017/sessions',
+      mongoUrl: 'mongodb+srv://cdonchichi:R2A0Pg127UuY2EEO@cluster0.jc7qcir.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0' ,
       ttl: 7 * 24 * 60 * 60
     }),
     
